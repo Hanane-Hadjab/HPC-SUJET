@@ -3,27 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ARRAY_SIZE 16
-
-void echange(int* arr, int i, int j) {
-	int temp = arr[i];
-	arr[i] = arr[j];
-	arr[j] = temp;
-}
-
-void populate(int n, int *array) {
-    int i;
-    for (i = 0; i < n; i++) {
-        array[i] = n - i;
-    }
-}
-
-void print(int n, int *array) {
-    int i;
-    for (i = 0; i < n; i++) {
-        printf("%d ", array[i]);
-    }
-}
+#define ARRAY_SIZE 20
 
 void partition(int* arr, int start, int end, int* left, int* right) {
 	int piv = arr[*left];
@@ -107,10 +87,12 @@ int main(int argc, char** argv) {
 		// ALlouer de la mémoire 
 		MPI_Alloc_mem(array_temp_size * nbTask * sizeof(int), MPI_INFO_NULL, &arr);
 
+		int z;
+    	for (z = 0; z < ARRAY_SIZE; z++) {
+        	arr[z] = ARRAY_SIZE - z;
+    	}
+
 		int i;
-
-		populate(ARRAY_SIZE, arr);
-
 		for(i = ARRAY_SIZE; i < array_temp_size * nbTask; i++) {
 			arr[i] = __INT_MAX__;
 		}
@@ -124,6 +106,7 @@ int main(int argc, char** argv) {
 
 	MPI_Alloc_mem(array_temp_size * sizeof(int), MPI_INFO_NULL, &array_temp);
 
+	// Envoyer le contenu de tableau arr vers le tableau array_temp
 	MPI_Scatter(arr, array_temp_size, MPI_INT, array_temp, array_temp_size, MPI_INT, 0, MPI_COMM_WORLD);
 
 	sort(array_temp, 0, array_temp_size-1);
@@ -131,8 +114,6 @@ int main(int argc, char** argv) {
 	MPI_Barrier(MPI_COMM_WORLD);
 
 	int i = 1;
-	
-
 	if(myRank == 0) {
 		MPI_Alloc_mem(nbTask * array_temp_size * sizeof(int), MPI_INFO_NULL, &arr);
 	}
@@ -143,7 +124,10 @@ int main(int argc, char** argv) {
 
 	if(myRank == 0) {
 		printf("Le tableau apres le tri est \n");
-		print(ARRAY_SIZE, arr);
+		int l;
+    	for (l = 0; l < ARRAY_SIZE; l++) {
+        	printf("%d ", arr[l]);
+    	}
 		printf("\n");
 	}
 
