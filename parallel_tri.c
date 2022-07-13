@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 
 		// Allouer de la mémoire pour les deux tableux
 
-		int size = ARRAY_SIZE / 2;
+		int size = ARRAY_SIZE / nbTask;
 
 		MPI_Alloc_mem(size * sizeof(int), MPI_INFO_NULL, &tab1);
 
@@ -137,46 +137,29 @@ int main(int argc, char** argv) {
 
 		MPI_Alloc_mem(ARRAY_SIZE * sizeof(int), MPI_INFO_NULL, &tab);
 		
-		for (int i = 0; i < ARRAY_SIZE / 2; ++i)
+		for (int i = 0; i < ARRAY_SIZE / nbTask; ++i)
 		{
 			tab1[i] = arr[i];
 		}
 
 		int j = 0;
-		for (int i = ARRAY_SIZE/2; i < ARRAY_SIZE; ++i)
+		for (int i = ARRAY_SIZE/nbTask; i < ARRAY_SIZE; ++i)
 		{
 			tab2[j] = arr[i];
 			++j;
 		}
-
-		printf("\n Affichage \n");
-
-		printf("\n Le premier tableau \n");
-
-		for (int l = 0; l < ARRAY_SIZE/2; l++) {
-			printf("%d ", tab1[l]);
-		}
-
-
-		printf("\n Le deuxieme tableau \n");
-
-		for (int k = 0; k < ARRAY_SIZE/2; k++) {
-			printf("%d ", tab2[k]);
-		}
 		
 		printf("Le tableau apres le tri est \n");
 
-		for (int i = 0; i < ARRAY_SIZE/2; ++i)
+		for (int i = 0; i < ARRAY_SIZE/nbTask; ++i)
 		{
 			tab[i] = tab2[i];
-			printf(" tab de 2 %d \n", tab[i]);
 		}
 		int m = 0;
-		for (int i = ARRAY_SIZE/2; i < ARRAY_SIZE; ++i)
+		for (int i = ARRAY_SIZE/nbTask; i < ARRAY_SIZE; ++i)
 		{
 			tab[i] = tab1[m];
 			++m;
-			printf(" tab de !1 %d \n", tab[i]);
 		}
 
 		for (int l = 0; l < ARRAY_SIZE; l++) {
